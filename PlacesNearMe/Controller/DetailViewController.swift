@@ -22,6 +22,7 @@ class DetailViewController: UIViewController {
 	@IBOutlet weak var tableViewHeight: NSLayoutConstraint!
 	
 	let distanceSpan: CLLocationDistance = 1000
+	let cellHeight = 44
 	let placeService: PlaceService = PlaceServiceManager.shared
 	var place: PlaceDetail?
 	var location = CLLocation()
@@ -133,13 +134,13 @@ extension DetailViewController:  UITableViewDelegate, UITableViewDataSource {
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		if indexPath.row == 0 {
 			if tableViewData[indexPath.section].opened == true {
-				tableViewHeight.constant = 44
+				tableViewHeight.constant = CGFloat(cellHeight)
 				tableViewData[indexPath.section].opened = false
 				let sections = IndexSet.init(integer: indexPath.section)
 				tableView.reloadSections(sections, with: .middle)
 			} else {
 				tableViewData[indexPath.section].opened = true
-				tableViewHeight.constant = 44 * 8
+				tableViewHeight.constant = CGFloat(cellHeight * 8)
 				let section = IndexSet.init(integer: indexPath.section)
 				tableView.reloadSections(section, with: .middle)
 			}
