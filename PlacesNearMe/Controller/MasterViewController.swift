@@ -44,21 +44,17 @@ class MasterViewController: UITableViewController {
 	
 	private func fetchPlaces(withLocation location: CLLocation) {
 		self.places = []
-//		activityIndicatorView.startAnimating()
 		
 		placeService.fetchPlaces(params: ["location":"\(location.coordinate.latitude),\(location.coordinate.longitude)","radius":"\(radius)","type":"\(contentType)"], successHandler: {[unowned self] (response) in
-			//self.activityIndicatorView.stopAnimating()
 			self.places = response.results
 			if UIDevice.current.userInterfaceIdiom == .pad {
 				let initialIndexPath = IndexPath(row: 0, section: 0)
 				self.tableView.selectRow(at: initialIndexPath, animated: true, scrollPosition:UITableView.ScrollPosition.none)
 				self.performSegue(withIdentifier: "showDetail", sender: initialIndexPath)
 			}
-			
 		})
 		{ (error) in
 			print(error.localizedDescription)
-			//self.activityIndicatorView.stopAnimating()
 		}
 	}
 
@@ -89,7 +85,7 @@ class MasterViewController: UITableViewController {
 		let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
 		let object = places[indexPath.row]
 		cell.textLabel!.text = object.name
-		print(object.placeId)
+		
 		//Measure distance betwen 2 objects
 		let currentLocationCoordinate = CLLocation(latitude: self.userLocation.coordinate.latitude, longitude: self.userLocation.coordinate.longitude)
 		let placeCoordinate = CLLocation(latitude: object.geometry.location.lat, longitude: object.geometry.location.lng)

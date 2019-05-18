@@ -19,12 +19,14 @@ class DetailViewController: UIViewController {
 	@IBOutlet weak var imageView: UIImageView!
 	@IBOutlet weak var address: UILabel!
 	@IBOutlet weak var customRatingView: FloatRatingView!
+	@IBOutlet weak var tableViewHeight: NSLayoutConstraint!
 	
 	let distanceSpan: CLLocationDistance = 1000
 	let placeService: PlaceService = PlaceServiceManager.shared
 	var place: PlaceDetail?
 	var location = CLLocation()
 	var mapCoordinates = MKCoordinateRegion()
+	var tableViewData = [cellData]()
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -44,8 +46,6 @@ class DetailViewController: UIViewController {
 		placeService.fetchPlace(id: detailItemID!, successHandler: {[unowned self] response in
 			//self.activityIndicatorView.stopAnimating()
 			self.place = response
-			print(self.place as Any)
-			self.tableView.reloadData()
 			
 			//Map Kit view with annotation
 			let annotation = MKPointAnnotation()
@@ -63,6 +63,12 @@ class DetailViewController: UIViewController {
 			self.phone.text = "Phone: \(self.place?.result.formattedPhoneNumber ?? "")"
 			self.address.text = "Address: \(self.place?.result.formattedAddress ?? "")"
 			self.customRatingView.rating = Double(self.place?.result.rating ?? 0)
+			
+			//Table view data
+			if let weeklyHours =  self.place?.result.openingHours?.weekdayText {
+				self.tableViewData = [cellData(opened: false, title: "Weekly Timetable ▾", sectionData: weeklyHours)]
+				self.tableView.reloadData()
+			}
 			
 			if let photo = self.place?.result.photos?[0] {
 				let url = URL(string: "\(PlaceServiceManager.shared.baseAPIURL)photo?maxwidth=800&photoreference=\(photo.photoReference)&key=\(PlaceServiceManager.shared.apiKey)")!
@@ -82,28 +88,62 @@ class DetailViewController: UIViewController {
 	}
 	
 	func downloadImage(from url: URL) {
-		print("Download Started")
 		getData(from: url) { data, response, error in
 			guard let data = data, error == nil else { return }
-			print(response?.suggestedFilename ?? url.lastPathComponent)
-			print("Download Finished")
 			DispatchQueue.main.async() {
 				self.imageView.image = UIImage(data: data)
 			}
 		}
 	}
+	
 }
 
 extension DetailViewController:  UITableViewDelegate, UITableViewDataSource {
 	
+	struct cellData {
+		var opened = Bool()
+		var title = String()
+		var sectionData = [String]()
+	}
+	
+	func numberOfSections(in tableView: UITableView) -> Int {
+		return tableViewData.count
+	}
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return self.place?.result.openingHours?.weekdayText?.count ?? 0
+		if tableViewData[section].opened == true {
+			return self.tableViewData[section].sectionData.count + 1
+		} else {
+			return 1
+		}
 	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let cell = tableView.dequeueReusableCell(withIdentifier: "cellDetail", for: indexPath)
-		cell.textLabel?.text = self.place?.result.openingHours?.weekdayText?[indexPath.row]
-		return cell
+		let dataIndex = indexPath.row - 1
+		if indexPath.row == 0 {
+			guard let cell = tableView.dequeueReusableCell(withIdentifier: "cellDetail") else { return UITableViewCell() }
+			cell.textLabel?.text = tableViewData[indexPath.section].title
+			return cell
+		} else {
+			guard let cell = tableView.dequeueReusableCell(withIdentifier: "cellDetail") else { return UITableViewCell() }
+			cell.textLabel?.text = tableViewData[indexPath.section].sectionData[dataIndex]
+			return cell
+		}
+	}
+	
+	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		if indexPath.row == 0 {
+			if tableViewData[indexPath.section].opened == true {
+				tableViewHeight.constant = 44
+				tableViewData[indexPath.section].opened = false
+				let sections = IndexSet.init(integer: indexPath.section)
+				tableView.reloadSections(sections, with: .middle)
+			} else {
+				tableViewData[indexPath.section].opened = true
+				tableViewHeight.constant = 44 * 8
+				let section = IndexSet.init(integer: indexPath.section)
+				tableView.reloadSections(section, with: .middle)
+			}
+		}
 	}
 }
 

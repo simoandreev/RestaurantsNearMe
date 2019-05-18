@@ -18,10 +18,7 @@ public class PlaceServiceManager: PlaceService {
     
     private let jsonDecoder: JSONDecoder = {
         let jsonDecoder = JSONDecoder()
-//        jsonDecoder.keyDecodingStrategy = .convertFromSnakeCase
-//        let dateFormatter = DateFormatter()
-//        dateFormatter.dateFormat = "yyyy-mm-dd"
-//        jsonDecoder.dateDecodingStrategy = .formatted(dateFormatter)
+	
         return jsonDecoder
     }()
     
@@ -45,7 +42,6 @@ public class PlaceServiceManager: PlaceService {
         }
         
         urlSession.dataTask(with: url) { (data, response, error) in
-			print(url)
             if error != nil {
                 self.handleError(errorHandler: errorHandler, error: PlaceError.apiError)
                 return
@@ -81,7 +77,6 @@ public class PlaceServiceManager: PlaceService {
         }
         
         urlSession.dataTask(with: url) { (data, response, error) in
-			print(url)
             if error != nil {
                 self.handleError(errorHandler: errorHandler, error: PlaceError.apiError)
                 return
@@ -97,7 +92,6 @@ public class PlaceServiceManager: PlaceService {
                 self.handleError(errorHandler: errorHandler, error: PlaceError.noData)
                 return
             }
-            //let data = try JSONSerialization.data(withJSONObject: json, options: .prettyPrinted)
             do {
 				let place = try self.jsonDecoder.decode(PlaceDetail.self, from: data)
                 DispatchQueue.main.async {
