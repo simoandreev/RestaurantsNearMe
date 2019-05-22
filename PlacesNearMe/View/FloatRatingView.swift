@@ -1,3 +1,11 @@
+//
+//  FloatRatingView.swift
+//  PlacesNearMe
+//
+//  Created by Simeon Andreev on 14.05.19.
+//  Copyright © 2019 Simeon Andreev. All rights reserved.
+//
+
 import UIKit
 
 @objc public protocol FloatRatingViewDelegate {

@@ -1,9 +1,9 @@
 //
-//  MovieRepository.swift
-//  MovieKit
+//  PlaceServiceManager.swift
+//  PlacesNearMe
 //
-//  Created by Alfian Losari on 11/24/18.
-//  Copyright © 2018 Alfian Losari. All rights reserved.
+//  Created by Simeon Andreev on 14.05.19.
+//  Copyright © 2019 Simeon Andreev. All rights reserved.
 //
 
 import Foundation
@@ -12,7 +12,7 @@ public class PlaceServiceManager: PlaceService {
     
     public static let shared = PlaceServiceManager()
     private init() {}
-	let apiKey = "AIzaSyCXE7t8i9WoAWAwcPl-9yilj7m545tpXbA"
+	let apiKey = "AIzaSyA1QiZgYpffiZ5V9m7e2XYGGFS0QGZ3OIA"
 	let baseAPIURL = "https://maps.googleapis.com/maps/api/place/"
     private let urlSession = URLSession.shared
     

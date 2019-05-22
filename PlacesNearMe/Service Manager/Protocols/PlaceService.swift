@@ -1,9 +1,9 @@
 //
-//  MovieService.swift
-//  MovieInfo
+//  PlaceService.swift
+//  PlacesNearMe
 //
-//  Created by Alfian Losari on 10/03/19.
-//  Copyright © 2019 Alfian Losari. All rights reserved.
+//  Created by Simeon Andreev on 14.05.19.
+//  Copyright © 2019 Simeon Andreev. All rights reserved.
 //
 
 import Foundation
